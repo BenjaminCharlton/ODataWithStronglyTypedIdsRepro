@@ -69,7 +69,7 @@ namespace ODataWithStronglyTypedIdsRepro.Server
 
             odataBuilder.EntitySet<ViewStudentDto>("Students");
 
-
+            //Tried the line below, but still resulted in a (different) error
             //studentEntitySet.EntityType.HasKey<Guid>(u => u.Id.Value);
 
             return odataBuilder.GetEdmModel();

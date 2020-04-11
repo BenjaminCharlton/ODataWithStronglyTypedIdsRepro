@@ -1,7 +1,44 @@
 ﻿@page "/"
+@using ODataWithStronglyTypedIdsRepro.Shared
+@inject HttpClient Http
 
-<h1>Hello, world!</h1>
+<h1>Weather forecast</h1>
 
-Welcome to your new app.
+<p>This component demonstrates fetching data from the server.</p>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@if (_students is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>StudentId.Value.ToString()</th>
+                <th>When Enrolled</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in _students)
+            {
+                <tr>
+                    <td>@student.Id.Value</td>
+                    <td>@student.WhenEnrolled</td>
+                    <td>@student.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<ViewStudentDto> _students;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _students = await Http.GetJsonAsync<ViewStudentDto[]>("api/students");
+    }
+
+}
