@@ -7,6 +7,8 @@ using System.Text.Json.Serialization;
 
 namespace ODataWithStronglyTypedIdsRepro.Shared.ValueObjects
 {
+    [TypeConverter(typeof(StudentIdTypeConverter))]
+    [JsonConverter(typeof(StudentIdJsonConverter))]
     public class StudentId : ValueObjectBase<StudentId, Guid>
     {
         private StudentId() : base(new Guid()) { }
