@@ -24,7 +24,7 @@ else
             @foreach (var student in _students)
             {
                 <tr>
-                    <td>@student.Id.Value</td>
+                    <td>@student.StudentId.Value</td>
                     <td>@student.WhenEnrolled</td>
                     <td>@student.Name</td>
                 </tr>
@@ -38,7 +38,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _students = await Http.GetJsonAsync<ViewStudentDto[]>("api/students");
+        var response = await Http.GetJsonAsync<ODataResponse<ViewStudentDto>>("api/students");
+        _students = response.Value;
     }
 
 }
