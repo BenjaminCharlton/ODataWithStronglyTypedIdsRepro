@@ -67,7 +67,10 @@ namespace ODataWithStronglyTypedIdsRepro.Server
             /* I need some configuration, possibly here, to teach OData that the ViewStudentDto's Id property
             is a strongly typed StudentId object, whose underlying value is a Guid in its Id property */
 
-            odataBuilder.EntitySet<ViewStudentDto>("Students");
+            var entitySet = odataBuilder.EntitySet<ViewStudentDto>("Students");
+
+            entitySet.EntityType.HasKey(e => e.Id);
+            entitySet.EntityType.Ignore(e => e.StudentId);
 
             //Tried the line below, but still resulted in a (different) error
             //studentEntitySet.EntityType.HasKey<Guid>(u => u.Id.Value);
