@@ -1,10 +1,12 @@
+using Microsoft.AspNet.OData.Builder;
+using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OData.Edm;
+using ODataWithStronglyTypedIdsRepro.Shared;
 using System.Linq;
 
 namespace ODataWithStronglyTypedIdsRepro.Server
@@ -24,6 +26,7 @@ namespace ODataWithStronglyTypedIdsRepro.Server
         {
 
             services.AddControllersWithViews();
+            var odata = services.AddOData();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,8 +53,26 @@ namespace ODataWithStronglyTypedIdsRepro.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.EnableDependencyInjection();
+                endpoints.Select().Filter().OrderBy().Count().MaxTop(1000);
+                endpoints.MapODataRoute("api", "api", GetEdmModel());
                 endpoints.MapFallbackToFile("index.html");
             });
+        }
+
+        private IEdmModel GetEdmModel()
+        {
+            var odataBuilder = new ODataConventionModelBuilder();
+
+            /* I need some configuration, possibly here, to teach OData that the ViewStudentDto's Id property
+            is a strongly typed StudentId object, whose underlying value is a Guid in its Id property */
+
+            odataBuilder.EntitySet<ViewStudentDto>("Students");
+
+
+            //studentEntitySet.EntityType.HasKey<Guid>(u => u.Id.Value);
+
+            return odataBuilder.GetEdmModel();
         }
     }
 }

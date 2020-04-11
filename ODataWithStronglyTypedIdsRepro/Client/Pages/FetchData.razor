@@ -6,7 +6,7 @@
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
+@if (_students is null)
 {
     <p><em>Loading...</em></p>
 }
@@ -15,20 +15,18 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>StudentId.Value.ToString()</th>
+                <th>When Enrolled</th>
+                <th>Name</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var student in _students)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@student.Id.Value</td>
+                    <td>@student.WhenEnrolled</td>
+                    <td>@student.Name</td>
                 </tr>
             }
         </tbody>
@@ -36,11 +34,11 @@ else
 }
 
 @code {
-    private WeatherForecast[] forecasts;
+    private IEnumerable<ViewStudentDto> _students;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetJsonAsync<WeatherForecast[]>("WeatherForecast");
+        _students = await Http.GetJsonAsync<ViewStudentDto[]>("students");
     }
 
 }
